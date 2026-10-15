@@ -61,8 +61,10 @@ streamlit run app.py
 Before that will work you need:
 
 - **The M5 data.** Download `sales_train_validation.csv`, `calendar.csv`, and `sell_prices.csv` from the Kaggle competition linked above and place them in `data/raw/m5/`. The `data/` folder is git-ignored.
-- **A trained model.** `ForecastAgent` loads `models/model.joblib`, `models/feature_cols.joblib`, and `models/cat_cols.joblib`. The `models/` folder is git-ignored and not included. The training notebook (`notebooks/global_model.ipynb`) saves files named `model_mean.joblib`, `model_q50.joblib`, and `model_q90.joblib`, so it is not yet clear which step produces `model.joblib`. *Needs confirmation.*
-- **An Anthropic API key** for the assistant. The key is currently set inline in `pages/AI_Assistant.py` (`anthropic.Anthropic(api_key="")`) rather than read from the environment. `app.py` also creates a Google GenAI client with a placeholder key; the LLM summary call that would use it is commented out in `backend/agent_pipeline.py`, so it may not be needed for the main flow. `.env.example` lists `GOOGLE_GENAI_API_KEY`, but nothing in the code reads it yet. Never commit a real key.
+- **A trained model.** `ForecastAgent` loads `models/model.joblib`, `models/feature_cols.joblib`, and `models/cat_cols.joblib`. These files are not in the repository, so the app will not start as-is. You would have to train the model yourself with `notebooks/global_model.ipynb`, but that notebook saves `model_mean.joblib`, `model_q50.joblib`, and `model_q90.joblib` rather than `model.joblib`, so some renaming or code changes are likely needed. *Needs confirmation.*
+- **An Anthropic API key** for the assistant, which is the only LLM the project uses. The key is currently set inline in `pages/AI_Assistant.py` (`anthropic.Anthropic(api_key="")`) rather than read from the environment. Never commit a real key.
+
+`app.py` still imports `google-genai` and creates a Gemini client, and `.env.example` lists a `GOOGLE_GENAI_API_KEY`. These are leftovers from an earlier version: the call that used Gemini is commented out, and no Gemini key is needed. The package still has to be installed because of the import.
 
 ## Repository layout
 
@@ -81,3 +83,5 @@ docs/                   Final report and presentation
 Built by Kaiwalya Mishra, Aditya Chache, and Dev Patel as a team; all three of us worked across the project. The code was originally developed in [adityachache/Agentic-AI-for-Inventory-Optimization](https://github.com/adityachache/Agentic-AI-for-Inventory-Optimization).
 
 Data: M5 Forecasting competition dataset (Walmart), via Kaggle.
+
+No license is attached. The code is shared for viewing as part of a portfolio; please ask before reusing it.
