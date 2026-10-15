@@ -1,5 +1,7 @@
 # Agentic AI for Inventory Optimization
 
+Streamlit app using Walmart M5 data: LightGBM forecasting, Monte Carlo (s, Q) policy simulation, MILP capital allocation, and a Claude assistant for demand shock testing.
+
 MSBA capstone project, College of Business and Economics, California State University, East Bay.
 Team: Kaiwalya Mishra, Aditya Chache, Dev Patel.
 
