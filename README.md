@@ -39,7 +39,7 @@ One limitation worth knowing: shock detection is keyword based (`is_shock_intent
 
 ## Running it locally
 
-> **Needs confirmation.** I have not run the app end to end from this repository. The steps below are based on reading the code, and the setup needs files that are not included here (see the notes after the commands).
+> **Needs confirmation.** The app has not been run end to end from this repository, because the data and the trained model are not included (see below). What has been checked: `requirements.txt` installs cleanly into a fresh Python environment, every backend module imports, and the AI Assistant page reads the API key from `.env` and shows an error when it is missing.
 
 ```bash
 git clone https://github.com/devvdpatel/Inventory-Optimization-using-Agentic-AI.git
@@ -47,24 +47,25 @@ cd Inventory-Optimization-using-Agentic-AI
 
 python -m venv .venv
 source .venv/bin/activate
-
 pip install -r requirements.txt
-# requirements.txt does not list these, but the code imports them:
-pip install anthropic plotly pyomo lightgbm
 
-# Pyomo needs the GLPK solver installed on the system, e.g. on macOS:
+# The portfolio MILP uses the GLPK solver, which pip does not install.
+# On macOS:
 brew install glpk
+
+# Add your Anthropic API key
+cp .env.example .env    # then edit .env
 
 streamlit run app.py
 ```
 
-Before that will work you need:
+Things you need that are not in the repository:
 
 - **The M5 data.** Download `sales_train_validation.csv`, `calendar.csv`, and `sell_prices.csv` from the Kaggle competition linked above and place them in `data/raw/m5/`. The `data/` folder is git-ignored.
-- **A trained model.** `ForecastAgent` loads `models/model.joblib`, `models/feature_cols.joblib`, and `models/cat_cols.joblib`. These files are not in the repository, so the app will not start as-is. You would have to train the model yourself with `notebooks/global_model.ipynb`, but that notebook saves `model_mean.joblib`, `model_q50.joblib`, and `model_q90.joblib` rather than `model.joblib`, so some renaming or code changes are likely needed. *Needs confirmation.*
-- **An Anthropic API key** for the assistant, which is the only LLM the project uses. The key is currently set inline in `pages/AI_Assistant.py` (`anthropic.Anthropic(api_key="")`) rather than read from the environment. Never commit a real key.
+- **A trained model.** `ForecastAgent` loads `models/model.joblib`, `models/feature_cols.joblib`, and `models/cat_cols.joblib`, and the app will not start without them. You would have to train the model yourself with `notebooks/global_model.ipynb`, but that notebook saves `model_mean.joblib`, `model_q50.joblib`, and `model_q90.joblib` rather than `model.joblib`, so some renaming or code changes are likely needed. *Needs confirmation.*
+- **An Anthropic API key.** Claude is the only LLM the app uses, and only on the AI Assistant page. Put the key in `.env` as `ANTHROPIC_API_KEY=...`. The `.env` file is git-ignored; never commit a real key.
 
-`app.py` still imports `google-genai` and creates a Gemini client, and `.env.example` lists a `GOOGLE_GENAI_API_KEY`. These are leftovers from an earlier version: the call that used Gemini is commented out, and no Gemini key is needed. The package still has to be installed because of the import.
+The notebooks still contain earlier experiments with Google Gemini, and two unused helpers from that work remain in the backend (`generate_llm_summary()` in `optimization_agent.py` and `parse_intent_with_llm()` in `mcp_tools.py`). The app itself does not call Gemini.
 
 ## Repository layout
 

@@ -2,7 +2,6 @@ from typing import Any
 
 
 import streamlit as st
-from google import genai
 
 from backend.build_base_df import build_df_base
 from backend.forecast_agent import ForecastAgent
@@ -33,12 +32,6 @@ st.set_page_config(
 )
 
 st.title("Inventory Optimization")
-
-# -------------------------
-# LLM Client
-# -------------------------
-
-llm_client = genai.Client(api_key="YOUR_API_KEY")
 
 # -------------------------
 # Cached Data + Models
@@ -268,7 +261,7 @@ def render_dashboard():
                 None,
                 df_base,
                 forecast_agent,
-                llm_client
+                None  # no LLM summary on this page; the AI Assistant page uses Claude
             )
 
             context["single_sku_results"] = results

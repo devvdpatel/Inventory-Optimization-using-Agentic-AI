@@ -1,6 +1,10 @@
+import os
 import re
+from pathlib import Path
+
 import streamlit as st
 import anthropic
+from dotenv import load_dotenv
 import pandas as pd
 
 from backend.mcp_tools import event_window_shock_tool, portfolio_event_window_shock_tool
@@ -18,7 +22,17 @@ st.set_page_config(
 st.title("AI Inventory Strategy Assistant")
 context = get_app_context()
 
-client = anthropic.Anthropic(api_key="")
+# Read the Anthropic key from .env in the project root (or from the environment)
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+if not ANTHROPIC_API_KEY:
+    st.error(
+        "ANTHROPIC_API_KEY is not set. Copy .env.example to .env in the project root "
+        "and add your Anthropic API key."
+    )
+    st.stop()
+
+client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 CLAUDE_MODEL = "claude-sonnet-4-6"
 
 SYSTEM_PROMPT = (
